@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <link href="css/select.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!--<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>-->
+    <script src="js/jquery-2.1.4.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script>
+
+    //修改回显
+    function huixian(clock){
+    //alert("tttttttttttttt");
+    //获取回显的id
+    var cid = clock.id;
+    alert("回显的id为:"+cid);
+    //通过ajax方法来
+    $.ajax({
+    type:"POST",
+    data:{"cid":cid},
+    url:"../hxEmployee",
+    success:function(s){
+
+    alert(s);
+   // console.log(s);
+    //得到反斜线的对象后,需要将该对象的值反显到模态框中
+    $("#id").val(s.cid);
+    $("#nc").val(s.employee.eid);
+    $("#ss").val(s.starttime);
+    $("#ly").val(s.endtime);
+    $("#fw").val(s.daytime);
+
+
+
+
+    //获取角色下拉框的id
+    //$("#dept").html(htmlstr);
+
+    //修改模态框表单的action路径
+    //$("#form1").attr("action","updateEmployee");
+    }
+    });
+    }
+
+    </script>
+
+
+</head>
+<body>
+
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th align="center">卡号</th>
+        <th align="center">员工编号</th>
+        <th align="center">员工姓名</th>
+        <th align="center">起始时间</th>
+        <th align="center">终止时间</th>
+        <th align="center">当前日期</th>
+        <th align="center">删除</th>
+        <th align="center">修改</th>
+
+    </thead>
+    <tbody>
+    <tr th:each="f:${list}">
+        <td  th:text="${f.cid}">1</td>
+        <td  th:text="${f.employee.eid}">1</td>
+        <td  th:text="${f.employee.ename}">1</td>
+        <td  th:text="${f.starttime}">1</td>
+        <td  th:text="${f.endtime}">1</td>
+        <td  th:text="${f.daytime}">1</td>
+
+        <td>
+            <a  href="show.html" th:href="@{/deleteUser(id=${f.cid})}"
+                type="button" class="btn btn-info btn-sm">
+                <span class="glyphicon glyphicon-trash"></span> Trash
+            </a>
+        </td>
+
+        <td >
+            <button type="button" class="btn btn-info btn-sm"  th:id="${f.cid}" onclick="huixian(this)"
+                    data-toggle="modal" data-target="#myModal">
+                <span class="glyphicon glyphicon-list-alt"></span> Update
+            </button>
+
+        </td>
+
+    </tr>
+    </tbody>
+</table>
+
+<!--**************************************注册/修改=模态框********************************-->
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    小妖精,快回来!
+                </h4>
+            </div>
+
+            <div class="modal-body">
+
+                <form class="form-horizontal" role="form" action="updateEmployee" method="post" id="form1">
+
+                    <div class="form-group">
+                        <label for="id" class="col-sm-4 control-label"></label>
+                        <div class="col-sm-4">
+                            <input type="hidden" class="form-control" id="id"
+                                   name="cid">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nc" class="col-sm-4 control-label">员工编号:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="nc"
+                                   name="employee.eid">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ss" class="col-sm-4 control-label">起至时间:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="ss"
+                                   name="starttime">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ly" class="col-sm-4 control-label">终止时间:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="ly"
+                                   name="endtime">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fw" class="col-sm-4 control-label">当前时间:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="fw"
+                                   name="daytime">
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-4 col-sm-4">
+                            <!-- <button type="submit" class="btn btn-default">登录</button>-->
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">
+                                <span class="glyphicon glyphicon-share"></span> Return
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-check"></span> OK
+                            </button>
+
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+
+</body>
+</html>
